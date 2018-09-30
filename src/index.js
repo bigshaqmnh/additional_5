@@ -1,28 +1,30 @@
 module.exports = function check(str, bracketsConfig) {
-  let compare = false, counter = 0, strSplit = str.split('');
-
-  for (let i = 0; i < bracketsConfig.length; ++i) {
-    let openBracket = strSplit.indexOf(bracketsConfig[i][0]);
-    let closeBracket = strSplit.indexOf(bracketsConfig[i][1]);
-
-    if (closeBracket < openBracket) {
-      compare = false;
-      break;
-    }
-    for (let j = openBracket; j < strSplit.length; ++j) {
-      if (strSplit[j] === bracketsConfig[i][0]) {
-        counter++;
-      }
-      if (strSplit[j] === bracketsConfig[i][1]) {
-        counter--;
-      }
-    }
-    if (!counter) {
-      compare = true;
-    } else {
-      compare = false;
-    }
+  if (str.length % 2 !== 0) {
+    return false;
   }
 
-  return compare;
+  let strSplit = str.split(''), brackets = new Object(), container = [];
+
+  for (let i = 0; i < bracketsConfig.length; ++i) {
+    let openingBracket = bracketsConfig[i][0];
+    let closingBracket = bracketsConfig[i][1];
+    brackets[openingBracket] = closingBracket;
+  }
+
+  for (let i = 0; i < strSplit.length; ++i) {
+    if (Object.keys(brackets).find(key => key === strSplit[i])) {
+      container.push(strSplit[i]);
+      if (strSplit[i] === '8' || strSplit[i] === '7' || strSplit[i] === '|') {
+        container.pop();
+      }
+    } else {
+      let bracket = container.pop();
+
+      if (brackets[bracket] !== strSplit[i]) {
+        return false;
+      }
+    }
+  }
+  
+  return true;
 }
